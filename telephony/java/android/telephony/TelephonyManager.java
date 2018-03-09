@@ -849,17 +849,6 @@ public class TelephonyManager {
             "android.telephony.event.EVENT_HANDOVER_TO_WIFI_FAILED";
 
     /**
-     * {@link android.telecom.Connection} event used to indicate when in
-     * emergency redial if phone account changed then inform InCallService
-     * with new phone account to update InCallUI,
-     * Sent via {@link android.telecom.Connection#sendConnectionEvent(String, Bundle)}.
-     * The {@link Bundle} parameter is expected to be null when this connection event is used.
-     * @hide
-     */
-    public static final String EVENT_PHONE_ACCOUNT_CHANGED =
-            "org.codeaurora.event.PHONE_ACCOUNT_CHANGED";
-
-    /**
      * {@link android.telecom.Connection} event used to indicate that a video call was downgraded to
      * audio because the data limit was reached.
      * <p>
@@ -974,9 +963,6 @@ public class TelephonyManager {
      */
     public static final int USSD_ERROR_SERVICE_UNAVAIL = -2;
 
-    /** {@hide} */
-    public static final String EMR_DIAL_ACCOUNT = "emr_dial_account";
-
     //
     //
     // Device Info
@@ -1050,7 +1036,6 @@ public class TelephonyManager {
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getDeviceId(int slotIndex) {
         // FIXME this assumes phoneId == slotIndex
-        android.util.SeempLog.record_str(8, ""+slotIndex);
         try {
             IPhoneSubInfo info = getSubscriberInfo();
             if (info == null)
@@ -1169,7 +1154,6 @@ public class TelephonyManager {
             android.Manifest.permission.ACCESS_FINE_LOCATION
     })
     public CellLocation getCellLocation() {
-        android.util.SeempLog.record(49);
         try {
             ITelephony telephony = getITelephony();
             if (telephony == null) {
@@ -1259,7 +1243,6 @@ public class TelephonyManager {
     @Deprecated
     @RequiresPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)
     public List<NeighboringCellInfo> getNeighboringCellInfo() {
-        android.util.SeempLog.record(50);
         try {
             ITelephony telephony = getITelephony();
             if (telephony == null)
@@ -1836,7 +1819,7 @@ public class TelephonyManager {
      */
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public int getDataNetworkType() {
-        return getDataNetworkType(getDefaultDataSubscriptionId());
+        return getDataNetworkType(getSubId(SubscriptionManager.getDefaultDataSubscriptionId()));
     }
 
     /**
@@ -2298,7 +2281,6 @@ public class TelephonyManager {
      */
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getSimSerialNumber(int subId) {
-        android.util.SeempLog.record_str(388, ""+subId);
         try {
             IPhoneSubInfo info = getSubscriberInfo();
             if (info == null)
@@ -2378,7 +2360,6 @@ public class TelephonyManager {
      */
     @RequiresPermission(android.Manifest.permission.READ_PHONE_STATE)
     public String getSubscriberId(int subId) {
-        android.util.SeempLog.record_str(389, ""+subId);
         try {
             IPhoneSubInfo info = getSubscriberInfo();
             if (info == null)
@@ -2572,7 +2553,6 @@ public class TelephonyManager {
             android.Manifest.permission.READ_PHONE_NUMBERS
     })
     public String getLine1Number(int subId) {
-        android.util.SeempLog.record_str(9, ""+subId);
         String number = null;
         try {
             ITelephony telephony = getITelephony();
@@ -4290,13 +4270,6 @@ public class TelephonyManager {
     }
 
     /**
-     * Returns Default Data subscription.
-     */
-    private static int getDefaultDataSubscriptionId() {
-        return SubscriptionManager.getDefaultDataSubscriptionId();
-    }
-
-    /**
      * Return an appropriate slot index for any situation.
      *
      * if this object has been created with {@link #createForSubscriptionId}, then the slot index
@@ -5632,7 +5605,7 @@ public class TelephonyManager {
      */
     @RequiresPermission(android.Manifest.permission.MODIFY_PHONE_STATE)
     public void setDataEnabled(boolean enable) {
-        setDataEnabled(getDefaultDataSubscriptionId(), enable);
+        setDataEnabled(getSubId(SubscriptionManager.getDefaultDataSubscriptionId()), enable);
     }
 
     /** @hide */
@@ -5681,7 +5654,7 @@ public class TelephonyManager {
      */
     @SuppressWarnings("deprecation")
     public boolean isDataEnabled() {
-        return getDataEnabled(getDefaultDataSubscriptionId());
+        return getDataEnabled(getSubId(SubscriptionManager.getDefaultDataSubscriptionId()));
     }
 
     /**
